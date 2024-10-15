@@ -54,3 +54,5 @@ node_modules/
 
 # Generated folders by Go modules
 bin/
+
+storage

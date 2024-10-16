@@ -138,3 +138,41 @@ func DeleteById(storage storage.Storage) http.HandlerFunc {
 		})
 	}
 }
+func UpdateById(storage storage.Storage) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		id := r.PathValue("id")
+		if id == "" {
+			slog.Info("id is empty")
+			response.WriteJson(w, http.StatusBadRequest, map[string]interface{}{
+				"message": "id is empty",
+				"success": false,
+			})
+			return
+		}
+		var student types.Student
+		err := json.NewDecoder(r.Body).Decode(&student)
+		if err != nil {
+			slog.Info("Error in decoding student request body", err)
+			response.WriteJson(w, http.StatusBadRequest, map[string]interface{}{
+				"message": "Invalid request body",
+				"success": false,
+			})
+			return
+		}
+		//student.ID = id
+
+		err = storage.UpdateStudent(id, student)
+		if err != nil {
+			slog.Info("Error in updating student by id :", err)
+			response.WriteJson(w, http.StatusInternalServerError, map[string]interface{}{
+				"message": "Failed to update student",
+				"success": false,
+			})
+			return
+		}
+		response.WriteJson(w, http.StatusOK, map[string]interface{}{
+			"message": "student updated successfully",
+			"success": true,
+		})
+	}
+}

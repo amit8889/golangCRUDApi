@@ -92,6 +92,35 @@ func (s *Sqlite) DeleteStudent(id any) error {
 	return nil
 
 }
+func (s *Sqlite) UpdateStudent(id any, student types.Student) error {
+	// Prepare the update query
+	smt, err := s.DB.Prepare("UPDATE student SET name=?, email=?, age=? WHERE id = ?")
+	if err != nil {
+		return err
+	}
+	defer smt.Close()
+
+	// Execute the update query
+	result, err := smt.Exec(student.Name, student.Email, student.Age, id)
+	if err != nil {
+		return err
+	}
+
+	// Check the number of rows affected
+	rowsAffected, err := result.RowsAffected()
+	if err != nil {
+		return err
+	}
+
+	// If no rows were affected, return an error
+	if rowsAffected == 0 {
+		return errors.New("no rows updated, possibly invalid ID")
+	}
+
+	fmt.Println("Row updated successfully")
+	return nil
+}
+
 func New(cfg *config.Config) (*Sqlite, error) {
 	// Open the SQLite3 database
 	db, err := sql.Open("sqlite3", cfg.StoragePath)

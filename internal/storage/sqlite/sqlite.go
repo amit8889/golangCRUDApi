@@ -4,6 +4,7 @@ import (
 	"database/sql"
 
 	"github.com/amit8889/golangCRUDApi/internal/config"
+	"github.com/amit8889/golangCRUDApi/internal/types"
 	_ "github.com/mattn/go-sqlite3"
 )
 
@@ -26,6 +27,19 @@ func (s *Sqlite) CreateStudent(name string, email string, age int) (int64, error
 	return res.LastInsertId()
 }
 
+func (s *Sqlite) GetStudent(id any) (types.Student, error) {
+	smt, err := s.DB.Prepare("SELECT * FROM student WHERE id=?")
+	if err != nil {
+		return types.Student{}, err
+	}
+	defer smt.Close()
+	var student types.Student
+	err = smt.QueryRow(id).Scan(&student.ID, &student.Name, &student.Email, &student.Age)
+	if err != nil {
+		return types.Student{}, err
+	}
+	return student, nil
+}
 func New(cfg *config.Config) (*Sqlite, error) {
 	// Open the SQLite3 database
 	db, err := sql.Open("sqlite3", cfg.StoragePath)

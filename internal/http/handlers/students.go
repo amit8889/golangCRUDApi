@@ -56,3 +56,37 @@ func New(storage storage.Storage) http.HandlerFunc {
 
 	}
 }
+
+func GetStudentByID(storage storage.Storage) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		slog.Info("getting a student by id")
+		//vars := mux.Vars(r) // Get the path variables
+		//id := vars["id"]
+		id := r.PathValue("id") // Get the path variables
+		slog.Info("Id of user is : ", slog.String("id", id))
+		if id == "" {
+			response.WriteJson(w, http.StatusBadRequest, map[string]interface{}{
+				"message": "id is required",
+				"success": false,
+			})
+			return
+		}
+		student, err := storage.GetStudent(id)
+		if err != nil {
+			slog.Info("Error in getting student by id :", err)
+			response.WriteJson(w, http.StatusNotFound, map[string]interface{}{
+				"message": "Failed to get student",
+				"success": false,
+			})
+			return
+		}
+
+		//stu, err := storage.GetStudent(id)
+		response.WriteJson(w, http.StatusAccepted, map[string]interface{}{
+			"message": "student details",
+			"success": true,
+			"student": student,
+		})
+
+	}
+}

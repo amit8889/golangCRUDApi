@@ -90,3 +90,51 @@ func GetStudentByID(storage storage.Storage) http.HandlerFunc {
 
 	}
 }
+
+func GetAllStudents(storage storage.Storage) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		slog.Info("getting all students")
+		students, err := storage.GetAllStudents()
+		if err != nil {
+			slog.Info("Error in getting all students :", err)
+			response.WriteJson(w, http.StatusInternalServerError, map[string]interface{}{
+				"message": "Failed to get students",
+				"success": false,
+			})
+			return
+		}
+		response.WriteJson(w, http.StatusOK, map[string]interface{}{
+			"message":  "students details",
+			"success":  true,
+			"students": students,
+		})
+
+	}
+}
+
+func DeleteById(storage storage.Storage) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		id := r.PathValue("id")
+		if id == "" {
+			slog.Info("id is empty")
+			response.WriteJson(w, http.StatusBadRequest, map[string]interface{}{
+				"message": "id is empty",
+				"success": false,
+			})
+			return
+		}
+		err := storage.DeleteStudent(id)
+		if err != nil {
+			slog.Info("Error in deleting student by id :", err)
+			response.WriteJson(w, http.StatusInternalServerError, map[string]interface{}{
+				"message": "Failed to delete student",
+				"success": false,
+			})
+			return
+		}
+		response.WriteJson(w, http.StatusOK, map[string]interface{}{
+			"message": "student deleted successfully",
+			"success": true,
+		})
+	}
+}

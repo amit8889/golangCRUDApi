@@ -2,6 +2,8 @@ package sqllite
 
 import (
 	"database/sql"
+	"errors"
+	"fmt"
 
 	"github.com/amit8889/golangCRUDApi/internal/config"
 	"github.com/amit8889/golangCRUDApi/internal/types"
@@ -39,6 +41,56 @@ func (s *Sqlite) GetStudent(id any) (types.Student, error) {
 		return types.Student{}, err
 	}
 	return student, nil
+}
+func (s *Sqlite) GetAllStudents() ([]types.Student, error) {
+	smt, err := s.DB.Prepare("SELECT * FROM student")
+	if err != nil {
+		return nil, err
+	}
+	defer smt.Close()
+	var students []types.Student
+	rows, err := smt.Query()
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	for rows.Next() {
+		var student types.Student
+		err = rows.Scan(&student.ID, &student.Name, &student.Email, &student.Age)
+		if err != nil {
+			return nil, err
+		}
+		students = append(students, student)
+	}
+	return students, nil
+}
+func (s *Sqlite) DeleteStudent(id any) error {
+	smt, err := s.DB.Prepare("DELETE FROM student WHERE id=?")
+	if err != nil {
+		return err
+	}
+	defer smt.Close()
+	fmt.Println("=====id==", id)
+	// Execute the delete query
+	result, err := smt.Exec(id) // assuming 1 is the id you want to delete
+	if err != nil {
+		return err
+	}
+
+	// Check the number of rows affected
+	rowsAffected, err := result.RowsAffected()
+	if err != nil {
+		return err
+	}
+
+	if rowsAffected == 0 {
+		return errors.New("no rows affected")
+	} else {
+		fmt.Println("Row deleted successfully")
+	}
+
+	return nil
+
 }
 func New(cfg *config.Config) (*Sqlite, error) {
 	// Open the SQLite3 database

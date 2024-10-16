@@ -13,15 +13,22 @@ import (
 
 	"github.com/amit8889/golangCRUDApi/internal/config"
 	student "github.com/amit8889/golangCRUDApi/internal/http/handlers"
+	sqllite "github.com/amit8889/golangCRUDApi/internal/storage/sqlite"
 )
 
 func main() {
 	fmt.Println("========Welcome to sudents-api======")
 	//load config
 	cfg := config.MustLoad()
+	//db setup
+	storage, err := sqllite.New(cfg)
+	if err != nil {
+		log.Fatal(err)
+	}
+	slog.Info("storage initalize", slog.String("env", cfg.Env), slog.String("version", "1.0.0"))
 	//router setup
 	router := http.NewServeMux()
-	router.HandleFunc("POST /api/students", student.New())
+	router.HandleFunc("POST /api/students", student.New(storage))
 
 	// setup server
 	server := http.Server{
@@ -43,7 +50,7 @@ func main() {
 	ctx, cancle := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancle()
 
-	err := server.Shutdown(ctx)
+	err = server.Shutdown(ctx)
 	if err != nil {
 		slog.Error("Failed to shutdown server", slog.String("error", err.Error()))
 	}

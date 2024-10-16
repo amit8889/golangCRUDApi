@@ -26,8 +26,10 @@ func main() {
 		log.Fatal(err)
 	}
 	slog.Info("storage initalize", slog.String("env", cfg.Env), slog.String("version", "1.0.0"))
+
 	//router setup
 	router := http.NewServeMux()
+	router.HandleFunc("/", welcomeHandler)
 	router.HandleFunc("POST /api/students", student.New(storage))
 	router.HandleFunc("GET /api/getStudentById/{id}", student.GetStudentByID(storage))
 	router.HandleFunc("GET /api/getAllStudents", student.GetAllStudents(storage))
@@ -60,4 +62,10 @@ func main() {
 	}
 	slog.Info("Server shutdown successfully")
 
+}
+func welcomeHandler(w http.ResponseWriter, r *http.Request) {
+	// Set the status code to 200 (OK)
+	w.WriteHeader(http.StatusOK)
+	// Write the response body
+	fmt.Fprintln(w, "Welcome to students-api")
 }

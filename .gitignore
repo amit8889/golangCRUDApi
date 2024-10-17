@@ -1,59 +1,59 @@
 
-# Binaries for programs and plugins
-*.exe
-*.dll
-*.so
-*.dylib
-*.test
-*.out
+# # Binaries for programs and plugins
+# *.exe
+# *.dll
+# *.so
+# *.dylib
+# *.test
+# *.out
 
-# Output of the go coverage tool, specifically when used with LiteIDE
-*.out
+# # Output of the go coverage tool, specifically when used with LiteIDE
+# *.out
 
-# Temporary files and directories created by build process
-/_obj/
-/_test/
-/_testmain.go
+# # Temporary files and directories created by build process
+# /_obj/
+# /_test/
+# /_testmain.go
 
-# IDEs and editors
-.vscode/
-.idea/
-*.swp
-*~
+# # IDEs and editors
+# .vscode/
+# .idea/
+# *.swp
+# *~
 
-# Go workspace and dependency directories
-vendor/
-Gopkg.lock
-Gopkg.toml
-go.sum
-go.mod
+# # Go workspace and dependency directories
+# vendor/
+# Gopkg.lock
+# Gopkg.toml
+# go.sum
+# go.mod
 
-# Local environment files
-.env
-.env.local
-.env.test
-.env.production
-.env.development
+# # Local environment files
+# .env
+# .env.local
+# .env.test
+# .env.production
+# .env.development
 
-# Log files
-*.log
+# # Log files
+# *.log
 
-# OS-specific files
-.DS_Store
-Thumbs.db
+# # OS-specific files
+# .DS_Store
+# Thumbs.db
 
-# Coverage reports
-*.cover
-*.cov
+# # Coverage reports
+# *.cover
+# *.cov
 
-# Cgo generated files
-_cgo_*
+# # Cgo generated files
+# _cgo_*
 
-# Node-related files if working with Go + JS
-node_modules/
+# # Node-related files if working with Go + JS
+# node_modules/
 
-# Generated folders by Go modules
-bin/
+# # Generated folders by Go modules
+# bin/
 
-
-/config
+# /storage
+# /config
